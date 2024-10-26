@@ -53,16 +53,17 @@ def upload_images(request):
         categorie_id = request.POST.get('categorie')
         categorie = Catégorie.objects.get(id=categorie_id)
 
+        # Gestion de l'upload de plusieurs images
         images = request.FILES.getlist('image')
         for image in images:
-            # Directement sauvegarder l'image sans conversion
-            vetement = Vêtement(categorie=categorie)
-            vetement.image.save(image.name, image)
-            vetement.save()
+            # Convertir l'image en AVIF
+            avif_image = convert_to_avif(image)
+            
+            # Sauvegarder l'image convertie dans le modèle
+            vetement = Vêtement.objects.create(categorie=categorie)
+            vetement.image.save(f"{uuid.uuid4()}.avif", avif_image)
 
-        return JsonResponse({'success': True})
-    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
-
+    return HttpResponse(status=400)
 
 def convert_to_avif(image):
     # Ouvre l'image uploadée avec Pillow
