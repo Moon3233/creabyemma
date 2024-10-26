@@ -13,28 +13,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from pillow_avif import AvifImagePlugin
-import environ
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Initialise environ
-env = environ.Env()
-
-# Lire le fichier .env
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # Utiliser la clé secrète depuis .env
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'creabyemma.onrender.com', 'www.creabyemma.com', 'creabyemma.com']
 
 # Charger la variable d'environnement pour différencier les environnements
-ENVIRONMENT = env('ENVIRONMENT')
-DEBUG = env('DEBUG')
+DEBUG = config('DEBUG', default=True, cast=bool)
+ENVIRONMENT = config('ENVIRONMENT', default='dev')
 
 # Application definition
 
@@ -88,12 +82,12 @@ WSGI_APPLICATION = 'creabyemma.wsgi.application'
 if ENVIRONMENT == 'prod':
     DATABASES = {
         'default': {
-            'ENGINE': env('DB_ENGINE'),
-            'NAME': env('DB_NAME'),
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST': env('DB_HOST'),
-            'PORT': env('DB_PORT'),
+            'ENGINE': config('DB_ENGINE'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT'),
         }
     }
 else:  # Configuration pour le développement (SQLite par défaut)
@@ -155,11 +149,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 if ENVIRONMENT == 'prod':
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_LOCATION = 'media'
-    
-    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='eu-north-1')
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
