@@ -39,7 +39,7 @@ SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'creabyemma.onrender.com', 'www.creabyemma.com', 'creabyemma.com']
 
 # Charger la variable d'environnement pour différencier les environnements
-ENVIRONMENT = env('ENVIRONMENT')
+ENVIRONMENT = env('ENVIRONMENT', default='dev')
 DEBUG = env('DEBUG')
 
 # Application definition
