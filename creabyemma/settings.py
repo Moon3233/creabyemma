@@ -159,11 +159,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Emplacement des fichiers médias
 MEDIA_URL = '/media/'
-if DEBUG:
+if ENVIRONMENT == 'prod':
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Configuration d'Amazon S3
-if not DEBUG:
+else:
     # Utiliser le backend de stockage S3 pour les fichiers médias
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
