@@ -17,10 +17,6 @@ import environ
 import logging
 logging.getLogger('boto3').setLevel(logging.DEBUG)
 logging.getLogger('botocore').setLevel(logging.DEBUG)
-from django.conf import settings
-print("DEFAULT_FILE_STORAGE:", settings.DEFAULT_FILE_STORAGE)
-print("ENVIRONMENT:", settings.ENVIRONMENT)
-print("DEBUG:", settings.DEBUG)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
