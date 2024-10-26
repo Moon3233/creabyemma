@@ -47,7 +47,22 @@ def filter_vetements(request):
 
     return JsonResponse({'vetements': vetement_data})
 
+@login_required
+def upload_images(request):
+    if request.method == 'POST':
+        categorie_id = request.POST.get('categorie')
+        categorie = Catégorie.objects.get(id=categorie_id)
 
+        # Gestion de l'upload de plusieurs images
+        images = request.FILES.getlist('image')
+        for image in images:
+            # Sauvegarder l'image sans conversion
+            vetement = Vêtement.objects.create(categorie=categorie)
+            vetement.image.save(f"{uuid.uuid4()}.jpg", image)
+
+        return HttpResponse(status=201)  # Retourner un code de succès si l'upload fonctionne
+
+    return HttpResponse(status=400)
 
 def update_vetement_name(request, vetement_id):
     if request.method == 'POST':
