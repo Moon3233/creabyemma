@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+
+    <title>Contactez-moi</title>
+    <link rel="stylesheet" href="{% static 'css/accueil.css' %}">
+</head>
+<body>
+
+    <!-- Header avec logo et navigation -->
+    <header>
+        <div class="logo-container-header">
+            <a href="/">
+                <img src="{% static 'images/creabyemmalogo.png' %}" alt="Logo du magasin" class="logo-header">
+            </a>
+        </div>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="/">Automne 🍁 & Hiver ❄️</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Section Contact avec la bannière d'images et la carte -->
+<main>
+
+    <!-- Informations de contact (duplicated) -->
+    <div class="contact-info">
+        <p>📞<a href="tel:+330228293624">02 28 29 36 24</a></p>
+        <p>Vous pouvez également m'envoyer un message sur mes réseaux sociaux</p>
+        <div class="social-icons">
+            <a href="https://facebook.com/creabyemma" target="_blank">
+                <img src="{% static 'images/facebook-circle-icon.avif' %}" alt="Facebook Logo">
+            </a>
+            <a href="https://instagram.com/creabyemma" target="_blank">
+                <img src="{% static 'images/instagram-circle-icon.avif' %}" alt="Instagram Logo">
+            </a>
+        </div>
+    </div>
+
+        <!-- Bannière d'images -->
+        <div class="magasin">
+            <img src="{% static 'images/magasin1.avif' %}" alt="Photo de l'intérieur magasin" class="magasin-img">
+            <img src="{% static 'images/magasin2.avif' %}" alt="Photo de l'intérieur magasin" class="magasin-img">
+            <img src="{% static 'images/magasin3.avif' %}" alt="Photo de l'intérieur magasin" class="magasin-img">
+            <img src="{% static 'images/magasin4.avif' %}" alt="Photo de l'intérieur magasin" class="magasin-img">
+        </div>
+
+</main>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="logo-container-footer">
+            <img src="{% static 'images/creabyemmalogo.png' %}" alt="Logo du magasin" class="logo-footer">
+        </div>
+        <div class="footer-content">
+            <p>23 Rue du Calvaire, 44000 Nantes</p>
+            <p>Du mardi au samedi : 10h - 13h & 14h - 18h45</p>
+            <p><a href="tel:+330228293624">02 28 29 36 24</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Sélectionner l'élément burger et le menu de navigation
+        const burgerMenu = document.querySelector('.burger-menu');
+        const nav = document.querySelector('.header-nav');
+    
+        // Écouter le clic sur le menu burger
+        burgerMenu.addEventListener('click', () => {
+            nav.classList.toggle('active');  // Afficher ou masquer le menu
+        });
+    
+        // Fermer le menu si l’utilisateur clique ailleurs
+        window.addEventListener('click', (e) => {
+            if (!burgerMenu.contains(e.target) && !nav.contains(e.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

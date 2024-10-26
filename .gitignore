@@ -1,0 +1,46 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# Environnements virtuels
+env/
+venv/
+ENV/
+venv.bak/
+.vscode/
+
+# Fichiers de configuration environnementale
+.env
+
+# Bases de données locales
+db.sqlite3
+*.db
+
+# Fichiers de migration Django
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Fichiers de log
+*.log
+*.pot
+*.pyc
+
+# Dossiers de cache
+**/__pycache__/
+**/*.py[cod]
+
+# Fichiers Media (si vous utilisez des fichiers téléversés pour le développement local)
+media/
+
+# Configuration de l'éditeur de code
+*.sublime-workspace
+.idea/
+*.code-workspace
+
+# Divers
+*.bak
+*.swp
+*.tmp
