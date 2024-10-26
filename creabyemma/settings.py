@@ -158,16 +158,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Emplacement des fichiers médias
-MEDIA_URL = '/media/'
 if ENVIRONMENT == 'prod':
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Configuration d'Amazon S3
-else:
-    # Utiliser le backend de stockage S3 pour les fichiers médias
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-    # Configuration d'Amazon S3 avec 'env' au lieu de 'config'
+    
     AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
@@ -176,8 +169,12 @@ else:
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
 
-    # URL de base pour les fichiers médias
+    # URL de base pour les fichiers médias dans S3
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+else:
+    # Configuration locale pour le développement (pas d'upload vers S3)
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
