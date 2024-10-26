@@ -14,18 +14,12 @@ from pathlib import Path
 import os
 from pillow_avif import AvifImagePlugin
 import environ
-import logging
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-logging.getLogger('botocore').setLevel(logging.DEBUG)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialise environ
-env = environ.Env(
-    # Définir les valeurs par défaut, ici False pour production
-    DEBUG=(bool, False)
-)
+env = environ.Env()
 
 # Lire le fichier .env
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -181,21 +175,4 @@ else:
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
-}
 
