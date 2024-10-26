@@ -1,4 +1,5 @@
 from django.db import models
+from pillow_avif import AvifImagePlugin #Nécessaire
 
 class Catégorie(models.Model):
     nom = models.CharField(max_length=100)
