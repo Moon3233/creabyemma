@@ -575,6 +575,10 @@ a:hover {
         width: 65vw;
     }
 
+    .category-button {
+        height: 50px;
+    }
+
     .category-logo {
         width: clamp(50px, 15vw, 100vw);
     }
