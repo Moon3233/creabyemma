@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}"> <!-- Lien vers ton fichier CSS -->
+</head>
+<body>
+
+
+    <main>
+        <h1>Se connecter</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" name="username" id="username" required spellcheck="false">
+            </div>
+            <div>
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit">Connexion</button>
+        </form>
+    </main>
+
+</body>
+</html>

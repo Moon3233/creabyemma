@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Creabyemma - Boutique de vêtements" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.creabyemma.com/" />
+    <meta property="og:image" content="{% static 'images/creabyemmalogo.png' %}" />
+    <meta property="og:description" content="Découvrez les dernières collections automne-hiver de vêtements tendances." />
+    <meta property="og:site_name" content="Creabyemma" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Creabyemma - Boutique de vêtements" />
+    <meta name="twitter:description" content="Découvrez les dernières collections automne-hiver de vêtements tendances." />
+    <meta name="twitter:image" content="{% static 'images/creabyemmalogo.png' %}" />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Store",
+            "name": "Creabyemma - Boutique de vêtements",
+            "image": "{% static 'images/creabyemmalogo.png' %}",
+            "description": "Découvrez les dernières collections automne-hiver de vêtements tendances.",
+            "url": "https://www.creabyemma.com/",
+            "telephone": "+33 2 28 29 36 24",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "23 Rue du Calvaire",
+                "addressLocality": "Nantes",
+                "postalCode": "44000",
+                "addressCountry": "FR"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "47.215415954589844",
+                "longitude": "1.561359167098999"
+            },
+            "openingHoursSpecification": [
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": [
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday"
+                    ],
+                    "opens": "10:00",
+                    "closes": "13:00"
+                },
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": [
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday"
+                    ],
+                    "opens": "14:00",
+                    "closes": "18:45"
+                }
+            ],
+            "sameAs": [
+                "https://www.facebook.com/Creabyemma",
+                "https://www.instagram.com/Creabyemma"
+            ]
+        }
+        </script>
+
+    <title>Accueil</title>
+    <link rel="stylesheet" href="{% static 'css/accueil.css' %}"> <!-- Lien vers le fichier CSS externe -->
+</head>
+<body>
+
+    <!-- Header avec le logo, la navigation et le bouton de déconnexion si connecté -->
+    <header>
+        <div class="logo-container-header">
+            <a href="/">
+                <img src="{% static 'images/creabyemmalogo.png' %}" alt="Logo du magasin" class="logo-header">
+            </a>
+        </div>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="/">Automne 🍁 & Hiver ❄️</a></li>
+                <li><a href="/contact">Contact</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Déconnexion</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <!-- Icône de menu burger pour mobile -->
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main>
+        <h1>Bienvenue chez Creabyemma - Boutique de vêtements tendance pour l'automne et l'hiver</h1>
+            <!-- Liste de boutons pour les catégories avec logos -->
+            <div class="category-buttons">
+                {% for categorie in categories %}
+                    <button class="category-button" data-categorie="{{ categorie.id }}">
+                        <img src="{{ categorie.logo.url }}" alt="{{ categorie.nom }}" class="category-logo">
+                    </button>
+                {% endfor %}
+            </div>
+
+            <!-- Si l'utilisateur est connecté, afficher le bouton Ajouter -->
+            {% if user.is_authenticated %}
+                <div class="add-button-container">
+                    <button class="add-button" id="open-modal">Ajouter</button>
+                </div>
+            {% endif %}
+
+            <!-- Liste des vêtements filtrés en utilisant CSS Grid -->
+            <div id="vetement-list" class="grid-container">
+                {% for vetement in vetements %}
+                <div class="grid-item" data-categorie="{{ vetement.categorie.id }}" id="vetement-{{ vetement.id }}">
+                        <div class="img-container">
+                            <img src="{{ vetement.image.url }}" alt="{{ vetement.nom }}" class="grid-item-img">
+                            {% if user.is_authenticated %}
+                            <img src="{% static 'images/trash.avif' %}" alt="Supprimer" class="delete-icon-grid" data-id="{{ vetement.id }}">
+                            {% endif %}
+                        </div>
+                        <div class="info-container">
+                            <h2>
+                                <!-- Nom du vêtement -->
+                                <span class="vetement-nom" id="vetement-nom-{{ vetement.id }}">{{ vetement.nom }}</span>
+                                
+                                {% if user.is_authenticated %}
+                                <!-- Input caché pour modifier le nom -->
+                                <input type="text" class="edit-input" id="edit-input-{{ vetement.id }}" value="{{ vetement.nom }}" style="display: none;">
+                                
+                                
+                                <!-- Icone de crayon pour activer la modification -->
+                                <a href="#" class="edit-icon" data-id="{{ vetement.id }}">
+                                    <img src="{% static 'images/edit.avif' %}" alt="Modifier" class="edit-icon">
+                                </a>
+
+                                <!-- Bouton pour enregistrer les modifications (caché) -->
+                                <a href="#" class="save-btn" id="save-btn-{{ vetement.id }}" style="display: none;" data-id="{{ vetement.id }}">
+                                    <img src="{% static 'images/save.avif' %}" alt="Enregistrer" class="save-icon">
+                                </a>
+                                {% endif %}
+                            </h2>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Bouton Flèche vers le haut -->
+            <button id="scroll-to-top" title="Remonter en haut">↑</button>
+
+        {% if user.is_authenticated %}
+        <!-- Modale pour ajouter des images -->
+        <div id="add-image-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-modal">&times;</span>
+                <h2>Ajouter des images</h2>
+                <form id="upload-form" action="{% url 'upload_images' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-image">
+                        <label for="image" class="file-upload-label">
+                            <img src="{% static 'images/upload_icon.avif' %}" alt="Upload Icon" class="upload-icon">
+                        </label>
+                        <input type="file" id="image" name="image" accept="image/*" multiple required>
+                        <p id="file-count">Aucun fichier sélectionné</p>
+                    </div>
+                    
+                    <div id="preview-container" class="preview-container"></div>
+                    <div>
+                        <label for="categorie"></label>
+                        <select name="categorie" id="categorie">
+                            {% for categorie in categories %}
+                                <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="modal-submit" disabled>Valider</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="logo-container-footer">
+            <img src="{% static 'images/creabyemmalogo.png' %}" alt="Logo du magasin" class="logo-footer">
+        </div>
+        <div class="footer-content">
+            <p>23 Rue du Calvaire, 44000 Nantes</p>
+            <p>Du mardi au samedi : 10h - 13h & 14h - 18h45</p>
+            <p><a href="tel:+330228293624">02 28 29 36 24</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Récupérer le bouton
+        const scrollToTopButton = document.getElementById('scroll-to-top');
+    
+        // Afficher le bouton lorsque l'utilisateur descend de 200px
+        window.onscroll = function() {
+            if (window.scrollY > 200) {
+                scrollToTopButton.style.display = 'block';
+            } else {
+                scrollToTopButton.style.display = 'none';
+            }
+        };
+    
+        // Remonter en haut de la page au clic
+        scrollToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Défilement fluide
+            });
+        });
+    </script>
+
+    <script>
+        // Sélectionner l'élément burger et le menu de navigation
+        const burgerMenu = document.querySelector('.burger-menu');
+        const nav = document.querySelector('.header-nav');
+    
+        // Écouter le clic sur le menu burger
+        burgerMenu.addEventListener('click', () => {
+            nav.classList.toggle('active');  // Afficher ou masquer le menu
+        });
+    
+        // Fermer le menu si l’utilisateur clique ailleurs
+        window.addEventListener('click', (e) => {
+            if (!burgerMenu.contains(e.target) && !nav.contains(e.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+    
+    {% if user.is_authenticated %}
+    <!-- Script pour afficher/fermer la modale -->
+    <script>
+        document.getElementById('open-modal').addEventListener('click', function() {
+            document.getElementById('add-image-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('add-image-modal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('add-image-modal')) {
+                document.getElementById('add-image-modal').style.display = 'none';
+            }
+        });
+        
+        // Fonction pour vérifier si tous les champs sont remplis
+        function checkFormValidity() {
+            const fileInput = document.getElementById('image');
+            const categorySelect = document.getElementById('categorie');
+            const submitButton = document.querySelector('.modal-submit');
+            
+            // Vérifier si un fichier est sélectionné et si une catégorie est choisie
+            if (fileInput.files.length > 0 && categorySelect.value !== "") {
+                submitButton.disabled = false;  // Activer le bouton si tout est bon
+            } else {
+                submitButton.disabled = true;  // Désactiver le bouton si quelque chose manque
+            }
+        }
+
+        // Désactiver le bouton au chargement de la page
+        window.addEventListener('load', function() {
+            checkFormValidity();  // Appeler la vérification à l'ouverture de la page
+        });
+
+        // Ajouter des écouteurs sur les champs pour vérifier leur validité en temps réel
+        document.getElementById('image').addEventListener('change', checkFormValidity);
+        document.getElementById('categorie').addEventListener('change', checkFormValidity);
+
+        // Fonction pour prévisualiser les images sélectionnées et afficher le nombre de fichiers
+        function previewImages() {
+            const previewContainer = document.getElementById('preview-container');
+            const fileInput = document.getElementById('image');
+            const fileCount = document.getElementById('file-count');
+            const files = fileInput.files;
+
+            // Vider le conteneur de prévisualisation avant d'ajouter les nouvelles images
+            previewContainer.innerHTML = '';
+
+            // Afficher le nombre de fichiers sélectionnés
+            if (files.length === 0) {
+                fileCount.textContent = 'Aucun fichier sélectionné';
+            } else {
+                fileCount.textContent = `${files.length} fichier(s) sélectionné(s)`;
+            }
+
+            // Parcourir les fichiers sélectionnés pour les prévisualiser
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Créer un conteneur pour l'image et l'icône de suppression
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('image-preview');
+                    
+                    // Créer un élément img et définir sa source
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.alt = file.name;
+
+                    // Créer une icône de suppression
+                    const deleteIcon = document.createElement('img');
+                    deleteIcon.src = "{% static 'images/trash.avif' %}"; // Votre icône de suppression
+                    deleteIcon.alt = "Supprimer";
+                    deleteIcon.classList.add('delete-icon');
+
+                    // Ajouter un événement pour supprimer l'image lorsqu'on clique sur l'icône
+                    deleteIcon.addEventListener('click', function() {
+                        removeImage(index); // Fonction pour supprimer l'image par son index
+                    });
+
+                    // Ajouter l'image et l'icône de suppression dans le conteneur
+                    imgContainer.appendChild(imgElement);
+                    imgContainer.appendChild(deleteIcon);
+                    
+                    // Ajouter le conteneur d'image dans le conteneur de prévisualisation
+                    previewContainer.appendChild(imgContainer);
+                };
+
+                // Lire le fichier pour générer la prévisualisation
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Fonction pour supprimer une image de la liste des fichiers sélectionnés
+        function removeImage(index) {
+            const fileInput = document.getElementById('image');
+            const dataTransfer = new DataTransfer();  // Créer un nouvel objet DataTransfer
+
+            // Parcourir les fichiers et ajouter ceux qui ne sont pas supprimés à DataTransfer
+            Array.from(fileInput.files).forEach((file, i) => {
+                if (i !== index) {
+                    dataTransfer.items.add(file);  // Ajouter le fichier sauf celui à l'index à supprimer
+                }
+            });
+
+            // Mettre à jour l'input avec la nouvelle liste de fichiers
+            fileInput.files = dataTransfer.files;
+
+            // Mettre à jour la prévisualisation et le nombre de fichiers
+            previewImages();
+        }
+
+        // Ajouter un événement 'change' pour déclencher la prévisualisation et afficher le nombre de fichiers
+        document.getElementById('image').addEventListener('change', previewImages);
+
+        // Fonction pour supprimer une image déjà présente dans la grille
+        function removeGridImage(vetementId) {
+            // Effectuer une requête AJAX pour supprimer l'image du vêtement côté serveur
+            fetch(`/delete_vetement_image/${vetementId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',  // N'oubliez pas d'inclure le token CSRF pour Django
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Si la suppression est réussie, retirer l'élément de la grille
+                    const vetementItem = document.getElementById(`vetement-${vetementId}`);
+                    vetementItem.remove();
+                } else {
+                    console.log('Erreur lors de la suppression de l\'image.');
+                }
+            });
+        }
+
+        // Gérer le clic sur l'icône de suppression dans la grille
+        document.querySelectorAll('.delete-icon-grid').forEach(function(deleteIcon) {
+            deleteIcon.addEventListener('click', function() {
+                const vetementId = this.dataset.id;  // Récupérer l'ID du vêtement
+                removeGridImage(vetementId);  // Appeler la fonction pour supprimer l'image
+            });
+        });
+    </script>
+    
+
+    <!-- Script pour gérer l'affichage de l'input et l'envoi du formulaire -->
+    <script>
+        // Gérer le clic sur l'icône de modification
+        document.querySelectorAll('.edit-icon').forEach(function (icon) {
+            icon.addEventListener('click', function (e) {
+                e.preventDefault();
+                const vetementId = this.dataset.id;
+                document.getElementById(`vetement-nom-${vetementId}`).style.display = 'none';  // Cacher le nom
+                document.getElementById(`edit-input-${vetementId}`).style.display = 'inline-block';  // Afficher l'input
+                document.getElementById(`save-btn-${vetementId}`).style.display = 'inline-block';  // Afficher le bouton "Enregistrer"
+            });
+        });
+
+        // Gérer le clic sur le bouton "Enregistrer"
+        document.querySelectorAll('.save-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const vetementId = this.dataset.id;
+                const newName = document.getElementById(`edit-input-${vetementId}`).value;
+
+                // Effectuer une requête AJAX pour mettre à jour le nom du vêtement
+                fetch(`/update_vetement_name/${vetementId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ nom: newName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mettre à jour le nom affiché et cacher l'input
+                        document.getElementById(`vetement-nom-${vetementId}`).textContent = newName;
+                        document.getElementById(`vetement-nom-${vetementId}`).style.display = 'inline-block';
+                        document.getElementById(`edit-input-${vetementId}`).style.display = 'none';
+                        document.getElementById(`save-btn-${vetementId}`).style.display = 'none';
+                    } else {
+                        console.log('Erreur lors de la mise à jour.');
+                    }
+                });
+            });
+        });
+    </script>
+    {% endif %}
+
+    <script src="{% static 'js/filter.js' %}"></script>
+
+</body>
+</html>
