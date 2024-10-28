@@ -566,4 +566,8 @@ a:hover {
     .magasin-img {
         width: clamp(75px, 15vw, 100vw);
     }
+
+    .modal-content {
+        width: 90%;
+    }
 }
