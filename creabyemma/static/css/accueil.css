@@ -570,4 +570,12 @@ a:hover {
     .modal-content {
         width: 90%;
     }
+
+    .modal-content form select {
+        width: 65vw;
+    }
+
+    .category-logo {
+        width: clamp(50px, 15vw, 100vw);
+    }
 }
