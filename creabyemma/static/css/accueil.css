@@ -21,6 +21,16 @@ header {
     background-color: #bb90b4;
 }
 
+.soldes {
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.soldes-image {
+    width: clamp(600px, 60vw, 100vw);
+}
+
 /* Conteneur du logo */
 .logo-container-header {
     flex: 1;
@@ -537,6 +547,10 @@ a:hover {
         font-size: 18px;
     }
 
+    .soldes-image {
+        width: clamp(200px, 70vw, 100vw);
+    }
+
     .category-buttons {
         flex-wrap: wrap;
         width: 75vw;
@@ -580,6 +594,6 @@ a:hover {
     }
 
     .category-logo {
-        width: clamp(50px, 15vw, 100vw);
+        width: clamp(60px, 9vw, 100vw);
     }
 }
