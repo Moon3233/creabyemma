@@ -63,13 +63,19 @@ header {
 .header-nav ul li a {
     text-decoration: none;
     color: white;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
     font-size: clamp(15px, 1vw, 100vw);
     font-family: "Abril Fatface", serif;
+    display: inline-block;
+}
+
+.header-nav ul li:hover {
+    transform: scale(1.2);
 }
 
 .header-nav ul li a:hover {
     color: #cd5f72; /* Changer la couleur au survol */
+
 }
 
 .burger-menu {
@@ -104,10 +110,11 @@ main h1 {
 	display: flex;
 	gap: 1rem;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .category-button {
-    border-radius: 60px;
+    border-radius: 5px;
     border: 0.125rem solid #bb90b4;
     color: #bb90b4;
     font-weight: bold;
@@ -125,9 +132,10 @@ main h1 {
 }
 
 .category-logo {
-    width: clamp(90px, 5vw, 100vw);
+    width: clamp(60px, 5vw, 120px);
     height: auto;
     object-fit: contain;
+    padding: 5px 0;
 }
 
 .add-button-container {
@@ -162,10 +170,10 @@ main h1 {
     padding: 10px;
     text-align: center;
     width: clamp(200px, 20vw, 100vw);
-    height: auto; /* Ajuste la hauteur automatiquement */
+    height: 500px; /* Ajuste la hauteur automatiquement */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     transition: opacity 5s ease; /* Durée et type de la transition */
 }

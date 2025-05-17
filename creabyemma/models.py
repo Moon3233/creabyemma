@@ -10,9 +10,9 @@ class Catégorie(models.Model):
         return self.nom
 
 class Vêtement(models.Model):
-    nom = models.CharField(max_length=100, null=True, blank=True)
+    nom = models.CharField(max_length=100, null=True, blank=True, default="")
     image = models.ImageField(upload_to='images/', storage=S3Boto3Storage())  # Spécifier explicitement le stockage S3
     categorie = models.ForeignKey('Catégorie', on_delete=models.CASCADE, related_name='vetements')
 
     def __str__(self):
-        return self.nom if self.nom else "Sans nom"
+        return self.nom if self.nom else ""
