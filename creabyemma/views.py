@@ -29,6 +29,11 @@ def home(request):
     else:
         vetements = Vêtement.objects.all()  # Sinon, afficher tous les vêtements
 
+    # S'assurer que les vêtements sans nom ont une chaîne vide
+    for vetement in vetements:
+        if vetement.nom is None:
+            vetement.nom = ""
+
     return render(request, 'pages/home.html', {'vetements': vetements, 'categories': categories})
 
 def filter_vetements(request):
@@ -40,7 +45,7 @@ def filter_vetements(request):
 
     vetement_data = [
         {
-            'nom': vetement.nom,
+            'nom': vetement.nom if vetement.nom else "",
             'image_url': vetement.image.url,
             'categorie': vetement.categorie.nom
         } for vetement in vetements
