@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
@@ -25,7 +25,7 @@ urlpatterns = [
     path("robots.txt", views.robots_txt, name="robots_txt"),
     
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),  # Page d'accueil
+    path('', views.home, name='home'),  # Page d'accueil (Django template, ou SPA en prod)
     path('filter/', views.filter_vetements, name='filter_vetements'),
     path('upload/', views.upload_images, name='upload_images'),
     path('update_vetement_name/<int:vetement_id>/', views.update_vetement_name, name='update_vetement_name'),
@@ -33,6 +33,11 @@ urlpatterns = [
 
     path('contact/', views.contact, name='contact'),
 
+    # API pour le frontend Svelte
+    path('api/categories/', views.api_categories, name='api_categories'),
+    path('api/vetements/', views.api_vetements, name='api_vetements'),
+    path('api/auth/status/', views.api_auth_status, name='api_auth_status'),
+    path('api/chat/', include('chat.urls')),
 
     path('login/', auth_views.LoginView.as_view(template_name='pages/login.html'), name='login'),
     path('logout/', views.custom_logout, name='logout'),

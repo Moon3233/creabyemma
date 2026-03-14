@@ -20,8 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# Utiliser la clé secrète depuis .env
-SECRET_KEY = config('SECRET_KEY')
+# Utiliser la clé secrète depuis .env (obligatoire en production)
+SECRET_KEY = config(
+    'SECRET_KEY',
+    default='django-insecure-dev-key-ne-pas-utiliser-en-production-xyz123',
+)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'creabyemma.onrender.com', 'www.creabyemma.com', 'creabyemma.com']
 
@@ -32,17 +35,22 @@ ENVIRONMENT = config('ENVIRONMENT', default='dev')
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'creabyemma',
+    'chat',
     'storages',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'creabyemma.middleware.RateLimitMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # Pour servir les fichiers statiques en production
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,4 +174,25 @@ else:
     MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
+
+# CORS pour le frontend Svelte (dev sur port 5173)
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+CORS_ALLOW_CREDENTIALS = True
+
+# Origines autorisées pour la vérification CSRF (Origin header)
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+
+# Channels (WebSocket chat)
+ASGI_APPLICATION = 'creabyemma.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 

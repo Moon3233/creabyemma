@@ -45,13 +45,59 @@ def filter_vetements(request):
 
     vetement_data = [
         {
+            'id': vetement.id,
             'nom': vetement.nom if vetement.nom else "",
-            'image_url': vetement.image.url,
-            'categorie': vetement.categorie.nom
-        } for vetement in vetements
+            'image_url': request.build_absolute_uri(vetement.image.url),
+            'categorie_id': vetement.categorie_id,
+            'categorie': vetement.categorie.nom,
+        }
+        for vetement in vetements
     ]
 
     return JsonResponse({'vetements': vetement_data})
+
+
+def api_categories(request):
+    """API : liste des catégories pour le frontend Svelte."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+    categories = Catégorie.objects.all()
+    data = []
+    for c in categories:
+        logo_url = ''
+        if c.logo and getattr(c.logo, 'url', None):
+            logo_url = request.build_absolute_uri(c.logo.url)
+        data.append({'id': c.id, 'nom': c.nom, 'logo_url': logo_url})
+    return JsonResponse({'categories': data})
+
+
+def api_vetements(request):
+    """API : liste des vêtements (optionnellement filtrée par catégorie)."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+    categorie_id = request.GET.get('categorie')
+    if categorie_id:
+        vetements = Vêtement.objects.filter(categorie_id=categorie_id)
+    else:
+        vetements = Vêtement.objects.all()
+    data = [
+        {
+            'id': v.id,
+            'nom': v.nom or '',
+            'image_url': request.build_absolute_uri(v.image.url),
+            'categorie_id': v.categorie_id,
+            'categorie': v.categorie.nom,
+        }
+        for v in vetements
+    ]
+    return JsonResponse({'vetements': data})
+
+
+def api_auth_status(request):
+    """API : indique si l'utilisateur est authentifié (pour le frontend Svelte)."""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+    return JsonResponse({'authenticated': request.user.is_authenticated})
 
 @login_required
 def upload_images(request):
@@ -74,8 +120,12 @@ def upload_images(request):
             # Sauvegarder l'image convertie dans le modèle
             vetement = Vêtement.objects.create(categorie=categorie)
             vetement.image.save(f"{uuid.uuid4()}.avif", avif_image)
+
+        # Réponse JSON pour le frontend Svelte (requête fetch avec credentials)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.accepts('application/json'):
+            return JsonResponse({'success': True})
         
-        # Redirection après le succès de l'upload
+        # Redirection après le succès de l'upload (fallback template Django)
         return redirect('home')
     
     # Si la requête n'est pas de type POST, retourne une erreur
