@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/chat/', include('chat.urls')),
     path('login/', views.login_view, name='login'),
     path('logout/', views.custom_logout, name='logout'),
+    path('logout', views.custom_logout),  # sans slash (bouton Déconnexion)
 
     # Assets SPA (JS, CSS depuis frontend/dist/assets)
     re_path(r'^assets/(?P<path>.*)$', serve, {'document_root': SPA_ROOT / 'assets'}),
