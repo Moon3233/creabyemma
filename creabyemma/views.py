@@ -3,6 +3,9 @@ from .models import Vêtement, Catégorie
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.views.static import serve
+from django.contrib.auth import authenticate, login
+from pathlib import Path
 import json
 from django.contrib.auth import logout
 
@@ -13,6 +16,23 @@ from django.core.files.base import ContentFile
 from io import BytesIO
 import uuid
 
+BASE_DIR = Path(settings.BASE_DIR)
+SPA_ROOT = BASE_DIR / 'frontend' / 'dist'
+
+
+def _serve_spa_index(request):
+    """Sert l'index.html de la SPA Svelte (frontend/dist)."""
+    index_path = SPA_ROOT / 'index.html'
+    if not index_path.exists():
+        return HttpResponse(
+            '<h1>SPA non buildée</h1><p>Exécutez <code>cd frontend && npm run build</code></p>',
+            status=503,
+            content_type='text/html',
+        )
+    with open(index_path, 'r', encoding='utf-8') as f:
+        return HttpResponse(f.read(), content_type='text/html')
+
+
 def robots_txt(request):
     lines = [
         "User-agent: *",
@@ -21,20 +41,8 @@ def robots_txt(request):
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
 def home(request):
-    categorie_id = request.GET.get('categorie')  # Récupère l'ID de la catégorie sélectionnée
-    categories = Catégorie.objects.all()  # Récupère toutes les catégories
-
-    if categorie_id:  # Si une catégorie est sélectionnée
-        vetements = Vêtement.objects.filter(categorie_id=categorie_id)  # Filtrer les vêtements par catégorie
-    else:
-        vetements = Vêtement.objects.all()  # Sinon, afficher tous les vêtements
-
-    # S'assurer que les vêtements sans nom ont une chaîne vide
-    for vetement in vetements:
-        if vetement.nom is None:
-            vetement.nom = ""
-
-    return render(request, 'pages/home.html', {'vetements': vetements, 'categories': categories})
+    """Sert la SPA Svelte (page d'accueil)."""
+    return _serve_spa_index(request)
 
 def filter_vetements(request):
     categorie_id = request.GET.get('categorie')
@@ -169,7 +177,21 @@ def delete_vetement_image(request, vetement_id):
     return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 def contact(request):
-    return render(request, 'pages/contact.html')
+    """Sert la SPA Svelte (page contact)."""
+    return _serve_spa_index(request)
+
+
+def login_view(request):
+    """GET : sert la SPA. POST : authentification Django."""
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            next_url = request.POST.get('next', '/')
+            return redirect(next_url)
+    return _serve_spa_index(request)
 
 def custom_logout(request):
     if request.method == 'GET' or request.method == 'POST':
