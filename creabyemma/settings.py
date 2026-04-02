@@ -210,6 +210,13 @@ if ENVIRONMENT == 'prod':
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Même cookie pour www et apex (évite « CSRF cookie not set » si l’utilisateur mélange les URL)
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    CSRF_COOKIE_SAMESITE = 'Lax'
+    _cookie_domain = config('CSRF_COOKIE_DOMAIN', default='').strip()
+    if _cookie_domain:
+        SESSION_COOKIE_DOMAIN = _cookie_domain
+        CSRF_COOKIE_DOMAIN = _cookie_domain
 
 # Channels (WebSocket chat)
 ASGI_APPLICATION = 'creabyemma.asgi.application'

@@ -12,7 +12,7 @@ _LAST_CLEANUP = time.monotonic()
 
 # Limites: (nombre, fenêtre en secondes)
 LIMITS = {
-    'login': (5, 300),      # 5 tentatives / 5 min
+    'login': (15, 300),     # 15 tentatives / 5 min (évite blocage après essais CSRF / typo)
     'upload': (20, 3600),    # 20 uploads / heure
     'api': (100, 60),        # 100 req API / min (générique)
 }

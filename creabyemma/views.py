@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.static import serve
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.cache import never_cache
 from pathlib import Path
 import json
 from django.contrib.auth import logout
@@ -101,11 +103,15 @@ def api_vetements(request):
     return JsonResponse({'vetements': data})
 
 
+@never_cache
+@ensure_csrf_cookie
 def api_auth_status(request):
     """API : indique si l'utilisateur est authentifié (pour le frontend Svelte)."""
     if request.method != 'GET':
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
-    return JsonResponse({'authenticated': request.user.is_authenticated})
+    resp = JsonResponse({'authenticated': request.user.is_authenticated})
+    resp['Cache-Control'] = 'no-store, no-cache, must-revalidate, private'
+    return resp
 
 @login_required
 def upload_images(request):
@@ -181,6 +187,7 @@ def contact(request):
     return _serve_spa_index(request)
 
 
+@ensure_csrf_cookie
 def login_view(request):
     """GET : sert la SPA. POST : authentification Django."""
     if request.method == 'POST':
