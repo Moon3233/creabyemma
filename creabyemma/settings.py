@@ -50,12 +50,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'creabyemma.middleware.RateLimitMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # Pour servir les fichiers statiques en production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Après CSRF : ne pas compter les POST refusés (403) dans le rate limit login
+    'creabyemma.middleware.RateLimitMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -180,13 +181,35 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
+# Même origine en prod (SPA servie par Django) : domaines du site
+if ENVIRONMENT == 'prod':
+    CORS_ALLOWED_ORIGINS.extend(
+        [
+            'https://www.creabyemma.com',
+            'https://creabyemma.com',
+            'https://creabyemma.onrender.com',
+        ]
+    )
+
 CORS_ALLOW_CREDENTIALS = True
 
-# Origines autorisées pour la vérification CSRF (Origin header)
+# Origines autorisées pour CSRF (obligatoire en HTTPS pour POST /login/, etc.)
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
+if ENVIRONMENT == 'prod':
+    CSRF_TRUSTED_ORIGINS.extend(
+        [
+            'https://www.creabyemma.com',
+            'https://creabyemma.com',
+            'https://creabyemma.onrender.com',
+        ]
+    )
+    # Cookies session / CSRF en HTTPS (Render, domaine custom)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Channels (WebSocket chat)
 ASGI_APPLICATION = 'creabyemma.asgi.application'
